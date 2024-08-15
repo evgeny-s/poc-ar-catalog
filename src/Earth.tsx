@@ -12,7 +12,7 @@ import {useGLTF} from '@react-three/drei'
 import {useFrame} from '@react-three/fiber';
 
 export function Earth(props: any) {
-    const {nodes, materials}: any = useGLTF('/earth.gltf');
+    const {nodes, materials}: any = useGLTF(import.meta.env.BASE_URL + '/earth.gltf');
 
     const objRef = useRef<any>();
 
@@ -27,4 +27,4 @@ export function Earth(props: any) {
     )
 }
 
-useGLTF.preload('/earth.gltf')
+useGLTF.preload(import.meta.env.BASE_URL + '/earth.gltf')
