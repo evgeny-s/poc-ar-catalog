@@ -12,3 +12,5 @@ Start using it
 ```shell
 npm run dev
 ```
+
+### [Live Demo](https://evgeny-s.github.io/poc-ar-catalog/)
