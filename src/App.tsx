@@ -11,6 +11,10 @@ function App() {
         setView(view === 'camera' ? '3d' : 'camera');
     }
 
+    const onSwitch = () => {
+        webcamRef.current.switchCamera();
+    }
+
     const webcamRef = useRef<any>(null);
     const cameraCanvasRef = useRef<any>(null);
     const overlayCanvasRef = useRef<any>(null);
@@ -62,7 +66,8 @@ function App() {
                     switchCamera: "switchCamera",
                     canvas: "canvas",
                 }}/>
-                <button style={{position: 'fixed', bottom: '10px', zIndex: '1'}}
+                <button style={{position: 'fixed', zIndex: 3, left: '5px', top: '5px'}} onClick={onSwitch}>Switch camera</button>
+                <button style={{position: 'fixed', bottom: '5px', left: '5px', zIndex: '1'}}
                         onClick={handleTakePhoto}>Take photo
                 </button>
                 {
