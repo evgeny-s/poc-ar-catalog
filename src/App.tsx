@@ -2,10 +2,12 @@ import {useCallback, useRef, useState} from "react";
 import {Camera} from "react-camera-pro";
 import "./App.css";
 import {EarthCanvas} from "./EarchCanvas";
+import {ObjCanvas} from "./ObjCanvas";
 
 function App() {
     const [view, setView] = useState<'3d' | 'camera'>('3d');
     const [image, setImage] = useState(null);
+    const [model, setModel] = useState<'earth' | 'sofa'>('earth');
 
     const onOpenCamera = () => {
         setView(view === 'camera' ? '3d' : 'camera');
@@ -15,11 +17,19 @@ function App() {
         webcamRef.current.switchCamera();
     }
 
+    const onChangeObject = (val: any) => {
+        setModel(val);
+    };
+
     const webcamRef = useRef<any>(null);
     const cameraCanvasRef = useRef<any>(null);
     const overlayCanvasRef = useRef<any>(null);
     const resultCanvasRef = useRef<any>(null);
     const downloadLinkRef = useRef<any>(null);
+
+    const onBack = () => {
+        setView('3d');
+    };
 
     const handleTakePhoto = useCallback(() => {
         const imageSrc = webcamRef.current.takePhoto();
@@ -52,13 +62,31 @@ function App() {
         };
     }, [webcamRef, cameraCanvasRef, overlayCanvasRef, resultCanvasRef]);
 
+    let Component: any = null;
+    if (model === 'earth') {
+        Component = EarthCanvas;
+    }
+    if (model === 'sofa') {
+        Component = ObjCanvas;
+    }
+
     return (
         <div style={{height: '100%'}}>
             <canvas ref={cameraCanvasRef} style={{display: 'none'}}/>
             <canvas ref={resultCanvasRef} style={{display: 'none'}}/>
 
             <h3>Example of 3d model on the Canvas</h3>
-            <button onClick={onOpenCamera}>Open Camera</button>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div>
+                    <button onClick={onChangeObject.bind(null, 'earth')}>Earth</button>
+                    <button onClick={onChangeObject.bind(null, 'sofa')}>Sofa</button>
+                </div>
+                <div>
+                    <button onClick={onOpenCamera}>Open Camera</button>
+                </div>
+
+            </div>
+
             <div style={{display: view === 'camera' ? 'block' : 'none'}}>
                 <Camera ref={webcamRef} errorMessages={{
                     noCameraAccessible: "noCameraAccessible",
@@ -66,20 +94,35 @@ function App() {
                     switchCamera: "switchCamera",
                     canvas: "canvas",
                 }}/>
-                <button style={{position: 'fixed', zIndex: 3, left: '5px', top: '5px'}} onClick={onSwitch}>Switch camera</button>
+                <div style={{position: 'fixed', zIndex: 3, left: '5px', top: '5px'}}>
+                    <button onClick={onBack}>
+                        ←
+                    </button>
+                    <button onClick={onSwitch}>Switch
+                        camera
+                    </button>
+                </div>
+
                 <button style={{position: 'fixed', bottom: '5px', left: '5px', zIndex: '1'}}
                         onClick={handleTakePhoto}>Take photo
                 </button>
                 {
-                    <div style={{position: 'absolute', width: '100px', right: '15px', top: '15px', zIndex: 2, display: image ? 'block' : 'none'}}>
+                    <div style={{
+                        position: 'absolute',
+                        width: '100px',
+                        right: '15px',
+                        top: '15px',
+                        zIndex: 2,
+                        display: image ? 'block' : 'none'
+                    }}>
                         <img style={{width: '100%', height: '100%'}} src={image || ''}
                              alt='Taken photo'/>
-                        <a ref={downloadLinkRef} style={{ marginTop: '10px', display: 'block' }}>
+                        <a ref={downloadLinkRef} style={{marginTop: '10px', display: 'block'}}>
                             Download Image
                         </a>
                     </div>
                 }
-                <EarthCanvas ref={overlayCanvasRef} style={{
+                <Component ref={overlayCanvasRef} style={{
                     background: 'none',
                     width: '100%',
                     height: '100%',
@@ -88,7 +131,7 @@ function App() {
                     top: 0
                 }}/>
             </div>
-            <EarthCanvas style={{display: view === '3d' ? 'block' : 'none'}}/>
+            <Component style={{display: view === '3d' ? 'block' : 'none'}}/>
         </div>
     )
 }
