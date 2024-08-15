@@ -1,10 +1,10 @@
-# POC app for 3d model in the browser
+# POC app for 3d model in the browser + add as overlay image to the camera picture
 
 How to add model:
 ```shell
-npx gltfjsx@6.5.0 earth.gltf
+npx gltfjsx earth.gltf
 ```
-Copy the JSX file to the src folder
+Copy the JSX file to the `src` folder
 
 Start using it
 
